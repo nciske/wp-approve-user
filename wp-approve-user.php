@@ -11,7 +11,7 @@
  * Domain Path: /lang
  * License:		GPLv2
  */
- 
+
 
 if ( ! get_option( 'users_can_register' ) ) {
 	return;
@@ -25,11 +25,11 @@ if ( ! class_exists( 'Obenland_Wp_Plugins_v300' ) ) {
 
 class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 
-	
+
 	///////////////////////////////////////////////////////////////////////////
 	// PROPERTIES, PUBLIC
 	///////////////////////////////////////////////////////////////////////////
-	
+
 	/**
 	 *
 	 * @since	1.1.0 - 12.02.2012
@@ -39,12 +39,12 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	 * @var	Obenland_Wp_Approve_User
 	 */
 	public static $instance;
-	
-	
+
+
 	///////////////////////////////////////////////////////////////////////////
 	// PROPERTIES, PROTECTED
 	///////////////////////////////////////////////////////////////////////////
-	
+
 	/**
 	 * The plugin options
 	 *
@@ -55,12 +55,12 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	 * @var		array
 	 */
 	protected $options;
-	
-	
+
+
 	///////////////////////////////////////////////////////////////////////////
 	// METHODS, PUBLIC
 	///////////////////////////////////////////////////////////////////////////
-	
+
 	/**
 	 * Constructor
 	 *
@@ -71,7 +71,7 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	 * @return	Obenland_Wp_Approve_User
 	 */
 	public function __construct() {
-		
+
 		parent::__construct( array(
 			'textdomain'		=>	'wp-approve-user',
 			'plugin_path'		=>	__FILE__,
@@ -83,13 +83,13 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 			get_option( $this->textdomain, array() ),
 			$this->default_options()
 		);
-		
+
 		load_plugin_textdomain( 'wp-approve-user' , false, 'wp-approve-user/lang' );
-		
+
 		$this->hook( 'plugins_loaded' );
 	}
-	
-	
+
+
 	/**
 	 * Approves all existing users.
 	 *
@@ -105,14 +105,14 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 			'blog_id'	=>	'',
 			'fields'	=>	'ID'
 		) );
-		
+
 		foreach ( $user_ids as $user_id ) {
 			update_user_meta( $user_id, 'wp-approve-user', true );
 			update_user_meta( $user_id, 'wp-approve-user-mail-sent', true );
 		}
 	}
-	
-	
+
+
 	/**
 	 * Hooks in all the hooks :)
 	 *
@@ -129,7 +129,7 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 		$this->hook( 'user_register' );
 		$this->hook( 'shake_error_codes' );
 		$this->hook( 'admin_menu' );
-		
+
 		$this->hook( 'admin_print_scripts-users.php' );
 		$this->hook( 'admin_print_scripts-site-users.php', 'admin_print_scripts_users_php' );
 		$this->hook( 'admin_print_styles-settings_page_wp-approve-user' );
@@ -138,13 +138,13 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 		$this->hook( 'admin_action_wpau_unapprove' );
 		$this->hook( 'admin_action_wpau_bulk_unapprove' );
 		$this->hook( 'admin_action_wpau_update' );
-		
+
 		$this->hook( 'wpau_approve' );
 		$this->hook( 'delete_user' );
 		$this->hook( 'admin_init' );
 	}
-	
-	
+
+
 	/**
 	 * Enqueues the script
 	 *
@@ -165,7 +165,7 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 			$plugin_data['Version'],
 			true
 		);
-		
+
 		wp_localize_script(
 			$this->textdomain,
 			'wp_approve_user',
@@ -175,11 +175,11 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 			)
 		);
 	}
-	
-	
+
+
 	/**
 	 * Enqueues the style on the settings page
-	 * 
+	 *
 	 * @author	Konstantin Obenland
 	 * @since	2.0.0 - 10.04.2012
 	 * @access	public
@@ -189,7 +189,7 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	public function admin_print_styles_settings_page_wp_approve_user() {
 		$plugin_data = get_plugin_data( __FILE__, false, false );
 		$suffix = ( defined('SCRIPT_DEBUG') AND SCRIPT_DEBUG ) ? '.dev' : '';
-		
+
 		wp_enqueue_style(
 			$this->textdomain,
 			plugins_url( "/css/settings-page{$suffix}.css", __FILE__ ),
@@ -197,8 +197,8 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 			$plugin_data['Version']
 		);
 	}
-	
-	
+
+
 	/**
 	 * Adds the plugin's row actions to the existing ones.
 	 *
@@ -214,7 +214,7 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	public function user_row_actions( $actions, $user_object ) {
 
 		if ( ( get_current_user_id() != $user_object->ID ) AND current_user_can( 'edit_user', $user_object->ID ) ) {
-			
+
 			$site_id	=	isset( $_REQUEST['id'] ) ? intval( $_REQUEST['id'] ) : 0;
 			$url		=	( 'site-users-network' == get_current_screen()->id ) ? add_query_arg( array( 'id' => $site_id ), 'site-users.php' ) : 'users.php';
 
@@ -223,7 +223,7 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 					'action'	=>	'wpau_unapprove',
 					'user'		=>	$user_object->ID
 				), $url ), 'wpau-unapprove-users' );
-				
+
 				$actions['wpau-unapprove']	=	"<a class='submitunapprove' href='{$url}'>" . __( 'Unapprove', 'wp-approve-user' ) . "</a>";
 			}
 			else {
@@ -231,15 +231,15 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 					'action'	=>	'wpau_approve',
 					'user'		=>	$user_object->ID
 				), $url ), 'wpau-approve-users' );
-				
+
 				$actions['wpau-approve']	=	"<a class='submitapprove' href='{$url}'>" . __( 'Approve', 'wp-approve-user' ) . "</a>";
 			}
 		}
-	
+
 		return $actions;
 	}
-	
-	
+
+
 	/**
 	 * Checks whether the user is approved. Throws error if not.
 	 *
@@ -252,18 +252,18 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	 * @return	WP_User|WP_Error
 	 */
 	public function wp_authenticate_user( $userdata ) {
-		
+
 		if ( ! is_wp_error( $userdata ) AND ! get_user_meta( $userdata->ID, 'wp-approve-user', true ) AND $userdata->user_email != get_bloginfo( 'admin_email' ) ) {
 			$userdata	=	new WP_Error(
 				'wpau_confirmation_error',
 				__('<strong>ERROR:</strong> Your account has to be confirmed by an administrator before you can login.', 'wp-approve-user')
 			);
 		}
-		
+
 		return $userdata;
 	}
-	
-	
+
+
 	/**
 	 * Updates user_meta to approve user when created by an Administrator.
 	 *
@@ -276,8 +276,8 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	public function user_register( $id ) {
 		update_user_meta( $id, 'wp-approve-user', current_user_can( 'create_users' ) );
 	}
-	
-	
+
+
 	/**
 	 * Updates user_meta to approve user.
 	 *
@@ -291,8 +291,8 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 		check_admin_referer( 'wpau-approve-users' );
 		$this->approve();
 	}
-	
-	
+
+
 	/**
 	 * Bulkupdates user_meta to approve user.
 	 *
@@ -306,8 +306,8 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 		check_admin_referer( 'bulk-users' );
 		$this->approve();
 	}
-	
-	
+
+
 	/**
 	 * Updates user_meta to unapprove user.
 	 *
@@ -321,8 +321,8 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 		check_admin_referer( 'wpau-unapprove-users' );
 		$this->unapprove();
 	}
-	
-	
+
+
 	/**
 	 * Bulkupdates user_meta to unapprove user.
 	 *
@@ -336,8 +336,8 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 		check_admin_referer( 'bulk-users' );
 		$this->unapprove();
 	}
-	
-	
+
+
 	/**
 	 * Adds the update message to the admin notices queue
 	 *
@@ -348,19 +348,19 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	 * @return	void
 	 */
 	public function admin_action_wpau_update() {
-	
+
 		switch( $_REQUEST['update'] ) {
 			case 'wpau-approved':
 				$message	=	_n( 'User approved.', '%d users approved.', $_REQUEST['count'], 'wp-approve-user' );
 				break;
-			
+
 			case 'wpau-unapproved':
 				$message	=	_n( 'User unapproved.', '%d users unapproved.', $_REQUEST['count'], 'wp-approve-user' );
 				break;
 			default:
 				$message	=	apply_filters( 'wpau_update_message_handler', '', $_REQUEST['update'] );
 		}
-		
+
 		if ( ! empty( $message ) ) {
 			add_settings_error(
 				$this->textdomain,
@@ -368,15 +368,15 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 				sprintf( $message, $_REQUEST['count'] ),
 				'updated'
 			);
-		
+
 			$this->hook( 'all_admin_notices' );
 		}
-		
+
 		// Prevent other admin action handlers from trying to handle our action
 		$_REQUEST['action'] = -1;
 	}
-	
-	
+
+
 	/**
 	 * Adds our error code to make the login form shake :)
 	 *
@@ -390,8 +390,8 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 		$shake_error_codes[]	=	'wpau_confirmation_error';
 		return $shake_error_codes;
 	}
-	
-	
+
+
 	/**
 	 * Enhances the User menu item to reflect the amount of unapproved users
 	 *
@@ -402,25 +402,25 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	 * @return	void
 	 */
 	public function admin_menu() {
-		
+
 		if ( current_user_can( 'list_users' ) AND version_compare( get_bloginfo( 'version' ), '3.2', '>=' ) ) {
 			global $menu;
 
 			foreach ( $menu as $key => $menu_item ) {
 				if ( array_search( 'users.php', $menu_item ) ) {
-				
+
 					//No need for number formatting, count() always returns an integer
 					$awaiting_mod	=	count( get_users( array(
 						'meta_key'		=>	'wp-approve-user',
 						'meta_value'	=>	false
 					) ) );
 					$menu[$key][0]	.=	" <span class='update-plugins count-{$awaiting_mod}'><span class='plugin-count'>{$awaiting_mod}</span></span>";
-					
+
 					break; // Bail on success
 				}
 			}
 		}
-		
+
 		add_options_page(
 			__( 'Approve User', 'wp-approve-user' ),	// Page Title
 			__( 'Approve User', 'wp-approve-user' ),	// Menu Title
@@ -429,8 +429,8 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 			array( &$this, 'settings_page' )			// Function
 		);
 	}
-	
-	
+
+
 	/**
 	 * Registers the plugins' settings
 	 *
@@ -441,20 +441,20 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	 * return	void
 	 */
 	public function admin_init() {
-		
+
 		register_setting(
 			$this->textdomain,
 			'wp-approve-user',
 			array( &$this, 'sanitize' )
 		);
-		
+
 		add_settings_section(
 			$this->textdomain,
 			__( 'Email contents', 'wp-approve-user' ),
 			array( &$this, 'section_description_cb' ),
 			$this->textdomain
 		);
-		
+
 		add_settings_field(
 			'wp-approve-user[send-approve-email]',
 			__( 'Send Approve Email', 'wp-approve-user' ),
@@ -478,7 +478,7 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 				'setting'	=>	'wpau-send-approve-email'
 			)
 		);
-		
+
 		add_settings_field(
 			'wp-approve-user[send-unapprove-email]',
 			__( 'Send Unapprove Email', 'wp-approve-user' ),
@@ -503,8 +503,8 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 			)
 		);
 	}
-	
-	
+
+
 	/**
 	 * Displays the options page
 	 *
@@ -519,7 +519,7 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 		<div class="wrap">
 			<?php screen_icon(); ?>
 			<h2><?php esc_html_e( 'Approve User Settings', 'wp-approve-user' ); ?></h2>
-			
+
 			<div id="poststuff">
 				<div id="post-body" class="obenland-wp columns-2">
 					<div id="post-body-content">
@@ -541,8 +541,8 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 		</div>
 		<?php
 	}
-	
-	
+
+
 	/**
 	 * Prints the section description
 	 *
@@ -557,14 +557,14 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 		if ( is_multisite() ) {
 			$tags[]	=	'SITE_NAME';
 		}
-		
+
 		printf(
 			_x( 'To take advantage of dynamic data, you can use the following placeholders: %s. Username will be the user login in most cases.', 'Placeholders', 'wp-approve-user' ),
 			sprintf( '<code>%s</code>', implode( '</code>, <code>', $tags ) )
 		);
 	}
-	
-	
+
+
 	/**
 	 * Populates the setting field
 	 *
@@ -582,8 +582,8 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 		</label><br />
 		<?php
 	}
-	
-	
+
+
 	/**
 	 * Populates the setting field
 	 *
@@ -599,8 +599,8 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 		<textarea id="<?php echo sanitize_title_with_dashes( $option->name ); ?>" class="large-text code" name="wp-approve-user[<?php echo esc_attr( $option->name ); ?>]" rows="10" cols="50" ><?php echo esc_textarea( $this->options[$option->name] ); ?></textarea>
 		<?php
 	}
-	
-	
+
+
 	/**
 	 * Sanitizes the settings input
 	 *
@@ -621,8 +621,8 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 
 		return $output;
 	}
-	
-	
+
+
 	/**
 	 * Sends the approval email
 	 *
@@ -635,27 +635,27 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	 * @return	void
 	 */
 	public function wpau_approve( $user_id ) {
-		
+
 		// check user meta if mail has been sent already
 		if ( $this->options['wpau-send-approve-email'] AND ! get_user_meta( $user_id, 'wp-approve-user-mail-sent', true ) ) {
-			
+
 			$user		=	new WP_User( $user_id );
 			$blogname	=	wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
-			
+
 			// send mail
 			$sent	=	@wp_mail(
 				$user->user_email,
 				sprintf( _x( '[%s] Registration approved', 'Blogname', 'wp-approve-user' ), $blogname ),
 				$this->populate_message( $this->options['wpau-approve-email'], $user )
 			);
-			
+
 			if ( $sent ) {
 				update_user_meta( $user_id, 'wp-approve-user-mail-sent', true );
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Sends the rejection email
 	 *
@@ -668,23 +668,23 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	 * @return	void
 	 */
 	public function delete_user( $user_id ) {
-		
+
 		if ( $this->options['wpau-send-unapprove-email'] ) {
 			$user		=	new WP_User( $user_id );
 			$blogname	=	wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
-				
+
 			// send mail
 			@wp_mail(
 				$user->user_email,
 				sprintf( _x( '[%s] Registration unapproved', 'Blogname', 'wp-approve-user' ), $blogname ),
 				$this->populate_message( $this->options['wpau-unapprove-email'], $user )
 			);
-			
+
 			// No need to delete user_meta, since this user will be GONE
 		}
 	}
-	
-	
+
+
 	/**
 	 * Display all messages registered to this Plugin
 	 *
@@ -697,12 +697,12 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	public function all_admin_notices() {
 		settings_errors( $this->textdomain );
 	}
-	
-	
+
+
 	///////////////////////////////////////////////////////////////////////////
 	// METHODS, PROTECTED
 	///////////////////////////////////////////////////////////////////////////
-	
+
 	/**
 	 * Updates user_meta to approve user.
 	 *
@@ -713,19 +713,19 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	 * @return	void
 	 */
 	protected function approve() {
-		
+
 		list( $userids, $url )	=	$this->check_user();
-		
+
 		foreach ( (array) $userids as $id ) {
 			$id = (int) $id;
-	
+
 			if ( ! current_user_can( 'edit_user', $id ) )
 				wp_die( __( 'You can&#8217;t edit that user.' ) );
-	
+
 			update_user_meta( $id, 'wp-approve-user', true );
 			do_action( 'wpau_approve', $id );
 		}
-		
+
 		wp_redirect( add_query_arg( array(
 			'action'	=>	'wpau_update',
 			'update'	=>	'wpau-approved',
@@ -733,8 +733,8 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 		), $url ) );
 		exit();
 	}
-	
-	
+
+
 	/**
 	 * Updates user_meta to unapprove user.
 	 *
@@ -745,19 +745,19 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	 * @return	void
 	 */
 	protected function unapprove() {
-		
+
 		list( $userids, $url )	=	$this->check_user();
-		
+
 		foreach ( (array) $userids as $id ) {
 			$id = (int) $id;
-	
+
 			if ( ! current_user_can( 'edit_user', $id ) )
 				wp_die( __( 'You can&#8217;t edit that user.' ) );
-	
+
 			update_user_meta( $id, 'wp-approve-user', false );
 			do_action( 'wpau_unapprove', $id );
 		}
-		
+
 		wp_redirect( add_query_arg( array(
 			'action'	=>	'wpau_update',
 			'update'	=>	'wpau-unapproved',
@@ -765,8 +765,8 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 		), $url ) );
 		exit();
 	}
-	
-	
+
+
 	/**
 	 * Checks permissions and assembles User IDs
 	 *
@@ -777,26 +777,26 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	 * @return	array	User IDs and URL
 	 */
 	protected function check_user() {
-		
+
 		$site_id	=	isset( $_REQUEST['id'] ) ? intval( $_REQUEST['id'] ) : 0;
 		$url		=	( 'site-users-network' == get_current_screen()->id ) ? add_query_arg( array( 'id' => $site_id ), 'site-users.php' ) : 'users.php';
-		
+
 		if ( empty( $_REQUEST['users'] ) AND empty( $_REQUEST['user'] ) ) {
 			wp_redirect( $url );
 			exit();
 		}
-	
+
 		if ( ! current_user_can( 'promote_users' ) ) {
 			wp_die( __( 'You can&#8217;t unapprove users.', 'wp-approve-user' ) );
 		}
-		
+
 		$userids = ( empty( $_REQUEST['users'] ) ) ? array( intval( $_REQUEST['user'] ) ) : (array) $_REQUEST['users'];
 		$userids = array_diff( $userids, array( get_user_by( 'email', get_bloginfo( 'admin_email' ) )->ID ) );
-		
+
 		return array( $userids, $url );
 	}
-	
-	
+
+
 	/**
 	 * Replaces all the placeholders with their content
 	 *
@@ -812,21 +812,21 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	protected function populate_message( $message, $user ) {
 
 		$title		=	wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
-		
+
 		$message	=	str_replace( 'BLOG_TITLE',	$title,					$message );
 		$message	=	str_replace( 'BLOG_URL',	home_url(),				$message );
 		$message	=	str_replace( 'LOGINLINK',	wp_login_url(),			$message );
 		$message	=	str_replace( 'USERNAME',	$user->user_nicename,	$message );
-		
+
 		if ( is_multisite() ) {
 			global $current_site;
 			$message	=	str_replace( 'SITE_NAME', $current_site->site_name, $message );
 		}
-		
+
 		return $message;
 	}
-	
-	
+
+
 	/**
 	 * Returns the default options
 	 *
@@ -845,14 +845,14 @@ Your registration for BLOG_TITLE has now been approved.
 You can log in, using your username and password that you created when registering for our website, at the following URL: LOGINLINK
 
 If you have any questions, or problems, then please do not hesitate to contact us.
- 
+
 Name,
 Company,
 Contact details',
 			'wpau-send-unapprove-email'	=>	false,
 			'wpau-unapprove-email'		=>	''
 		);
-		
+
 		return apply_filters( 'wpau_default_options', $options );
 	}
 }  // End of class Obenland_Wp_Approve_User

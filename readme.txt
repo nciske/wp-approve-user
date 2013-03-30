@@ -4,7 +4,7 @@ Tags: admin, user, login, approve, user management, plugin
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=G65Y5CM3HVRNY
 Requires at least: 3.1
 Tested up to: 3.4.1
-Stable tag: 2.1.1
+Stable tag: 2.1.2
 
 Adds action links to user table to approve or unapprove user registrations.
 
@@ -20,6 +20,7 @@ On activation of the plugin, all existing users will automatically be flagged Ap
 I will be more than happy to update the plugin with new locales, as soon as I receive them!
 Currently available in:
 
+* Dutch
 * Deutsch
 * English
 * Hebrew
@@ -59,6 +60,9 @@ Yes! Under Settings > Approve User, you can choose when to send an email and cus
 
 
 == Changelog ==
+
+= 2.1.2 =
+* Added Dutch translation. Props Jos Wolbers
 
 = 2.1.1 =
 * Fixed a bug, where new settings were not saved
