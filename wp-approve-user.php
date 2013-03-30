@@ -4,7 +4,7 @@
  * Plugin Name:	WP Approve User
  * Plugin URI:	http://en.wp.obenland.it/wp-approve-user/#utm_source=wordpress&utm_medium=plugin&utm_campaign=wp-approve-user
  * Description:	Adds action links to user table to approve or unapprove user registrations.
- * Version:		2.1.1
+ * Version:		2.2.0
  * Author:		Konstantin Obenland
  * Author URI:	http://en.wp.obenland.it/#utm_source=wordpress&utm_medium=plugin&utm_campaign=wp-approve-user
  * Text Domain: wp-approve-user
@@ -123,6 +123,7 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 	 * @return void
 	 */
 	public function plugins_loaded() {
+		$this->hook( 'update_option_users_can_register' );
 
 		$this->hook( 'user_row_actions' );
 		$this->hook( 'wp_authenticate_user' );
@@ -196,6 +197,28 @@ class Obenland_Wp_Approve_User extends Obenland_Wp_Plugins_v300 {
 			array(),
 			$plugin_data['Version']
 		);
+	}
+
+
+	/**
+	 * Re-runs the activation hook when registration is activated.
+	 *
+	 * If the plugin is activated and user registration is disabled, the plugin
+	 * activation hook never gets added, let alone fired. This a secondary
+	 * measure to make sure all existing users are approved on activation.
+	 *
+	 * @author Konstantin Obenland
+	 * @since  2.2.0 - 30.03.2013
+	 * @access public
+	 *
+	 * @param  string $old Old settings value.
+	 * @param  int    $new New settings value.
+	 *
+	 * @return void
+	 */
+	public function update_option_users_can_register( $old, $new ) {
+		if ( $new )
+			$this->activation();
 	}
 
 
